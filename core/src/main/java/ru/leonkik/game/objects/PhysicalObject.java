@@ -20,7 +20,15 @@ public class PhysicalObject {
             fixture.setUserData(objectHolder);
         }
     }
-
+    public float getX(){
+      return  body.getPosition().x/SCALE;
+    }
+    public float getY(){
+        return  body.getPosition().y/SCALE;
+    }
+    public void setPosition(float x, float y){
+      body.setTransform( x*SCALE ,y*SCALE,0);
+    }
     public Body getBody() {
         return body;
     }
@@ -47,6 +55,18 @@ public class PhysicalObject {
             CircleShape circleShape = new CircleShape();
             circleShape.setRadius(radius * SCALE);
             fixtureDef.shape = circleShape;
+            fixtureDef.density = 1;
+            fixtureDef.filter.categoryBits = categoryBits;
+            fixturesList.add(body.createFixture(fixtureDef));
+            circleShape.dispose();
+            return this;
+        }
+        public PhysicalObjectBuilder addCircularFixture(float radius, short categoryBits,int density) {
+            FixtureDef fixtureDef = new FixtureDef();
+            CircleShape circleShape = new CircleShape();
+            circleShape.setRadius(radius * SCALE);
+            fixtureDef.shape = circleShape;
+            fixtureDef.density = density;
             fixtureDef.filter.categoryBits = categoryBits;
             fixturesList.add(body.createFixture(fixtureDef));
             circleShape.dispose();
@@ -58,6 +78,17 @@ public class PhysicalObject {
             PolygonShape polygonShape = new PolygonShape();
             polygonShape.setAsBox(width / 2 * SCALE, height / 2 * SCALE);
             fixtureDef.filter.categoryBits = categoryBits;
+            fixtureDef.shape = polygonShape;
+            fixturesList.add(body.createFixture(fixtureDef));
+            polygonShape.dispose();
+            return this;
+        }
+        public PhysicalObjectBuilder addRectangularFixture(float width, float height, short categoryBits,int density) {
+            FixtureDef fixtureDef = new FixtureDef();
+            PolygonShape polygonShape = new PolygonShape();
+            polygonShape.setAsBox(width / 2 * SCALE, height / 2 * SCALE);
+            fixtureDef.filter.categoryBits = categoryBits;
+            fixtureDef.density = density;
             fixtureDef.shape = polygonShape;
             fixturesList.add(body.createFixture(fixtureDef));
             polygonShape.dispose();
@@ -87,6 +118,7 @@ public class PhysicalObject {
         public PhysicalObject build(Object objectHolder) {
             return new PhysicalObject(body, fixturesList, objectHolder);
         }
+
 
     }
 
